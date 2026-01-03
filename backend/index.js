@@ -9,22 +9,34 @@ import expenseRoute from "./routes/expense.route.js";
 dotenv.config({});
 
 const app = express();
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 //middleware
 app.use(express.json());
-app.use(urlencoded({extended:true}));
+app.use(urlencoded({ extended: true }));
 app.use(cookieparser());
+
+const allowedOrigins = [
+    "http://localhost:5173",
+    process.env.FRONTEND_URL
+].filter(Boolean);
+
 const corseOptions = {
-    origin: "http://localhost:5173",
-    credentials:true
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true
 }
 
 app.use(cors(corseOptions));
 
 //apis
-app.use("/api/v1/user",userRoute);
-app.use("/api/v1/expense",expenseRoute);
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/expense", expenseRoute);
 
 app.listen(PORT, () => {
     connectdb();
