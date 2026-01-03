@@ -39,3 +39,6 @@ Thumbs.db
 .cache/
 coverage/
 *.tsbuildinfo
+
+# Deployment guide (local only)
+DEPLOYMENT.md
